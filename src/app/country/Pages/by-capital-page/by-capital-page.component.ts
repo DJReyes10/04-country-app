@@ -2,8 +2,9 @@ import { Component, inject, resource, signal } from '@angular/core';
 import { CountrySearchInputComponent } from '../../components/country-search-input/country-search-input.component';
 import { CountryListComponent } from '../../components/country-list/country-list.component';
 import { CountryService } from '../../services/country.service';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { Country } from '../../interfaces/country.interface';
-import { first, firstValueFrom } from 'rxjs';
+import { first, firstValueFrom, of } from 'rxjs';
 
 @Component({
   selector: 'app-by-capital-page',
@@ -13,17 +14,26 @@ import { first, firstValueFrom } from 'rxjs';
 export class ByCapitalPageComponent {
   countryService = inject(CountryService);
   query = signal('');
-  countryResource = resource({
-    request: () => ({ query: this.query() }),
-    loader: async ({ request }) => {
-      if (!request.query) return [];
 
-      return await firstValueFrom(
-        this.countryService.searchByCapital(request.query)
-      );
+  countryResource = rxResource({
+    request: () => ({ query: this.query() }),
+    loader: ({ request }) => {
+      if (!request.query) return of([]);
+
+      return this.countryService.searchByCapital(request.query);
     },
   });
 
+  // countryResource = resource({
+  //     request: () => ({ query: this.query() }),
+  //     loader: async ({ request }) => {
+  //       if (!request.query) return [];
+
+  //       return await firstValueFrom(
+  //         this.countryService.searchByCapital(request.query)
+  //       );
+  //     },
+  //   });
   //Este componente es un ejemplo de como se puede usar el servicío de froma reactiva
   //Pero no es necesario utilizarlo de esta forma, ya que el servicio ya tiene un método para buscar por capital
   //

@@ -1,1 +1,9 @@
-<p>country-page works!</p>,
+<country-search-input placeholder="Buscar por país" 
+(value)="query.set($event)"/>
+
+
+@if ( countryResource.error()) {
+<h3> {{ countryResource.error() }} </h3>
+} @if (countryResource.hasValue() ) {
+<country-list [countries]="countryResource.value()!" />
+}

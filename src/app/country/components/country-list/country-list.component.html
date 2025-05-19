@@ -31,7 +31,9 @@
                     </span>
                 </td>
                 <td>
-                    <a class="link-primary cursor-pointer">Más Información</a>
+                    <a 
+                    [routerLink]="['/country', country.cca2]"
+                    class="link-primary cursor-pointer">Más Información</a>
                 </td>
             </tr>
         }
@@ -40,6 +42,4 @@
     </section>
     
     </div>
-    //
-
-    //Este archivo es el template de la lista de paises, donde se encuentra la tabal con los mismos.
+  
