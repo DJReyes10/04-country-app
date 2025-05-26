@@ -5,23 +5,21 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { CountrySearchInputComponent } from '../../components/country-search-input/country-search-input.component';
 import { Country } from '../../interfaces/country.interface';
 import { CountryListComponent } from '../../components/country-list/country-list.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-country-page',
-  imports: [CountrySearchInputComponent, CountryListComponent],
+  imports: [],
   templateUrl: './country-page.component.html',
 })
 export class CountryPageComponent {
-  countryService = inject(CountryService);
-  query = signal('');
-  countryResource = resource({
-    request: () => ({ query: this.query() }),
-    loader: async ({ request }) => {
-      if (!request.query) return [];
+  countryCode = inject(ActivatedRoute).snapshot.params['code'];
 
-      return await firstValueFrom(
-        this.countryService.searchByCountry(request.query)
-      );
+  countryService = inject(CountryService);
+  countryResource = rxResource({
+    request: () => ({ code: this.countryCode }),
+    loader: ({ request }) => {
+      return this.countryService.searchCountryByAlphaCode(request.code);
     },
   });
 }
