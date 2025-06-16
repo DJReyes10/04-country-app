@@ -12,6 +12,8 @@ export class CountryMapper {
       name: restCountry.translations['spa']?.common ?? 'No Spanish name found',
       //   capital: restCountry.capital?.[0] ?? '',
       population: restCountry.population,
+      region: restCountry.region,
+      subRegion: restCountry.subregion,
     };
     // } as Country;
   }

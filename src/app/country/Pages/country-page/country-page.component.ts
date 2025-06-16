@@ -6,10 +6,13 @@ import { CountrySearchInputComponent } from '../../components/country-search-inp
 import { Country } from '../../interfaces/country.interface';
 import { CountryListComponent } from '../../components/country-list/country-list.component';
 import { ActivatedRoute } from '@angular/router';
+import { NotFoundComponent } from '../../../shared/components/not-found/not-found.component';
+import { CountryInformationComponent } from './country-information/country-information.component';
 
 @Component({
   selector: 'app-country-page',
-  imports: [],
+  standalone: true,
+  imports: [CountryInformationComponent, NotFoundComponent],
   templateUrl: './country-page.component.html',
 })
 export class CountryPageComponent {
