@@ -5,7 +5,9 @@
   </h2>
 </section>
 
-<section class="stats shadow mx-5">
+<section
+  class="stats shadow mx-5 flex flex-row justify-center items-center text-center gap-x-8"
+>
   <div class="stat place-items-center">
     <div class="stat-title">Población</div>
     <div class="stat-value">{{ country().population | number }}</div>
@@ -22,6 +24,18 @@
     <div class="stat-title">Sub Región</div>
     <div class="stat-value">{{ country().subRegion }}</div>
     <div class="stat-desc">{{ country().region }}</div>
+  </div>
+
+  <div class="stat place-items-center">
+    <div class="stat-title">Bandera</div>
+    <div class="stat-value">
+      <img
+        [src]="country().flagSvg"
+        [alt]="country().name + ' flag'"
+        class="h-8 w-12 object-contain"
+      />
+    </div>
+    <div class="stat-desc">{{ country().subRegion }}</div>
   </div>
 </section>
 
