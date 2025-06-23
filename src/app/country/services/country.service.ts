@@ -4,6 +4,7 @@ import { RESTCountry } from '../interfaces/rest-countries.interface';
 import { map, Observable, catchError, throwError, delay, of, tap } from 'rxjs';
 import { Country } from '../interfaces/country.interface';
 import { CountryMapper } from '../mappers/country.mapper';
+import { Region } from '../interfaces/region.interface';
 
 const API_URL = 'https://restcountries.com/v3.1';
 
@@ -17,6 +18,7 @@ export class CountryService {
   private http = inject(HttpClient);
   private queryCacheCapital = new Map<string, Country[]>(); // Mapa para almacenar las consultas anteriores
   private queryCacheCountry = new Map<string, Country[]>();
+  private queryCacheRegion = new Map<Region, Country[]>();
   searchByCapital(query: string): Observable<Country[]> {
     query = query.toLowerCase();
 
@@ -39,7 +41,8 @@ export class CountryService {
       })
     );
   }
-  //
+  // Método para buscar países por nombre
+  // Utiliza un mapa para almacenar las consultas anteriores y evitar llamadas repetidas al servidor
   searchByCountry(query: string): Observable<Country[]> {
     const url = `${API_URL}/name/${query}`;
     query = query.toLowerCase();
@@ -65,6 +68,32 @@ export class CountryService {
       })
     );
   }
+  //
+  // Método para buscar países por región
+  // Utiliza un mapa para almacenar las consultas anteriores y evitar llamadas repetidas al servidor
+  searchByRegion(region: Region): Observable<Country[]> {
+    const url = `${API_URL}/region/${region}`;
+
+    if (this.queryCacheCountry.has(region)) {
+      return of(this.queryCacheCountry.get(region) ?? []);
+    }
+
+    return this.http.get<RESTCountry[]>(url).pipe(
+      map((resp) => CountryMapper.mapRestCountryArrayToCountryArray(resp)),
+      tap((countries) => {
+        this.queryCacheRegion.set(region, countries); // Almacena el resultado en la caché
+      }),
+      // Simula un retraso de 2 segundos para ver el efecto del debounce
+      catchError((error) => {
+        console.log('Error fetching', error);
+
+        return throwError(
+          () => new Error(`No se puedo obtener países con ese query ${region}`)
+        );
+      })
+    );
+  }
+  //
   //
   searchCountryByAlphaCode(code: string) {
     const url = `${API_URL}/alpha/${code}`;
